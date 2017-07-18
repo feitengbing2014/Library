@@ -1,6 +1,6 @@
 package com.ddq.net.response.parser;
 
-import com.ddq.architect.view.ICount;
+import com.ddq.net.view.ICount;
 import com.ddq.net.exception.ParseException;
 import com.ddq.net.util.IOUtil;
 
@@ -8,15 +8,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Type;
 
 /**
  * Created by dongdaqing on 2017/7/3.
  * 下载文件
  */
 
-public class FileParser implements Parser<File> {
+public class FileParser extends BaseParser<File> {
     private String path;//文件的完整路径
-    private ICount mProgress;
+    private WeakReference<ICount> mProgress;
 
     public FileParser(String path) {
         this(path, null);
@@ -24,7 +26,7 @@ public class FileParser implements Parser<File> {
 
     public FileParser(String path, ICount progress) {
         this.path = path;
-        mProgress = progress;
+        mProgress = new WeakReference<>(progress);
     }
 
     @Override
@@ -66,7 +68,9 @@ public class FileParser implements Parser<File> {
 
     private void dispatchProgress(int current, int total) {
         if (mProgress != null) {
-            mProgress.update(current, total);
+            ICount p = mProgress.get();
+            if (p != null)
+                p.update(current, total);
         }
     }
 }

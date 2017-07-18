@@ -1,7 +1,7 @@
 package com.ddq.net.request;
 
-import com.ddq.architect.error.DataError;
 import com.ddq.net.NetworkClient;
+import com.ddq.net.error.DataError;
 import com.ddq.net.response.ResponseHandler;
 
 /**
@@ -24,7 +24,6 @@ class RemoteDataSource implements DataSource {
 
         } else {
             request.onError(new DataError("unknown method:" + params.method()));
-            request.onFinish();
         }
     }
 

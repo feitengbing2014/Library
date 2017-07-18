@@ -20,5 +20,5 @@ public @interface Code {
      * 一般请求都以0作为请求正常，如果不是以0为正常结果，改变code()的值
      * @return
      */
-    int code() default 0;
+    String code() default "0";
 }

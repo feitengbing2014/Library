@@ -1,6 +1,6 @@
 package com.ddq.net.request;
 
-import com.ddq.architect.error.BaseError;
+import com.ddq.net.error.BaseError;
 
 /**
  * Created by dongdaqing on 2017/5/5.

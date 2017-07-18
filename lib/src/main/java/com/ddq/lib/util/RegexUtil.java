@@ -92,4 +92,17 @@ public class RegexUtil {
         Matcher matcher = pattern.matcher(s);
         return matcher.matches();
     }
+
+    /**
+     * 是否是身份证号码
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isIdCardNumber(String str) {
+        Pattern p = Pattern
+                .compile("^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}[0-9xX]$");
+        Matcher m = p.matcher(str);
+        return m.matches();
+    }
 }

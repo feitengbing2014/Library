@@ -115,6 +115,9 @@ public final class NetworkClient {
 
         @Override
         public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+            if (mCookieMatcher == null)
+                return;
+
             for (Cookie cookie : cookies) {
                 if (mCookieMatcher.shouldSaveForLaterUsage(url, cookie)) {
                     mCookieManager.saveCookie(url, cookie);

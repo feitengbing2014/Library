@@ -2,6 +2,7 @@ package com.ddq.lib.util;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 
 /**
  * Created by dongdaqing on 2017/6/29.
@@ -10,8 +11,7 @@ import android.util.DisplayMetrics;
 
 public class DimensionUtil {
     public static int dp2px(Context context, float dp) {
-        DisplayMetrics dm = new DisplayMetrics();
-        return (int) (dp * dm.density + 0.5f);
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
     /**

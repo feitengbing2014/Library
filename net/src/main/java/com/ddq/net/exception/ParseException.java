@@ -1,7 +1,7 @@
 package com.ddq.net.exception;
 
-import com.ddq.architect.error.BaseError;
-import com.ddq.architect.error.DataError;
+import com.ddq.net.error.BaseError;
+import com.ddq.net.error.DataError;
 
 /**
  * Created by dongdaqing on 2017/7/3.

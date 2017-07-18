@@ -6,7 +6,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
-
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -23,6 +24,26 @@ task clean(type: Delete) {
 }
 
 ext{
+
     supportLibraryVersion = '25.3.1'
     okhttpVersion = '3.4.1'
+
+    bintrayRepo = 'maven'
+
+    publishedGroupId = 'com.ddq'
+
+    libraryDescription = 'for personal use'
+
+    libraryVersion = '1.0.0-alpha-42'
+
+    siteUrl = 'https://github.com/feitengbing2014/Library'
+    gitUrl = 'https://github.com/feitengbing2014/Library.git'
+
+    developerId = 'ddq'
+    developerName = 'dongdaqing'
+    developerEmail = 'feitengbing2012@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
 }

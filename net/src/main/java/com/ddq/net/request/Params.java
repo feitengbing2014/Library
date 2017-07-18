@@ -2,6 +2,7 @@ package com.ddq.net.request;
 
 import com.ddq.net.response.parser.Parser;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -26,9 +27,10 @@ public interface Params<T> {
 
     /**
      * custom additional header
+     *
      * @return
      */
-    Map<String,String> headers();
+    Map<String, String> headers();
 
     /**
      * request method, default is get
@@ -39,6 +41,7 @@ public interface Params<T> {
 
     /**
      * response parser
+     *
      * @return
      */
     Parser<T> parser();

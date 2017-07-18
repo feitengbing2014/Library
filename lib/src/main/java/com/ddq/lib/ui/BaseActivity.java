@@ -1,25 +1,30 @@
 package com.ddq.lib.ui;
 
-import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.ddq.lib.view.IBroadcastDataView;
-import com.ddq.lib.view.IMessageView;
-import com.ddq.lib.view.IProgress;
-import com.ddq.lib.view.ITransactionView;
 import com.ddq.lib.util.FinishOptions;
+import com.ddq.lib.view.IBroadcastDataView;
+import com.ddq.lib.view.ICommitSuccessView;
+import com.ddq.lib.view.IMessageView;
+import com.ddq.lib.view.IPreferenceView;
+import com.ddq.lib.view.IReceiverView;
+import com.ddq.lib.view.ITransactionView;
 
 
 /**
@@ -27,10 +32,21 @@ import com.ddq.lib.util.FinishOptions;
  * 这里提供了很多基础功能方法，开发至今总结而来
  */
 
-public abstract class BaseActivity extends AppCompatActivity implements IProgress, IMessageView, ITransactionView, IBroadcastDataView {
+public abstract class BaseActivity extends AppCompatActivity implements IMessageView, ITransactionView, IBroadcastDataView, IReceiverView, ICommitSuccessView, IPreferenceView {
 
     private Toast mToast;
-    private ProgressDialog mDialog;
+    private BroadcastReceiver mReceiver;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                BaseActivity.this.onReceive(intent);
+            }
+        };
+    }
 
     protected final int getDimensionDelegate(@DimenRes int dimen) {
         return getResources().getDimensionPixelSize(dimen);
@@ -62,22 +78,22 @@ public abstract class BaseActivity extends AppCompatActivity implements IProgres
         mToast.show();
     }
 
-    @Override
-    public void showProgress() {
-        if (mDialog == null) {
-            mDialog = new ProgressDialog(this);
-            mDialog.setIndeterminate(true);
-            mDialog.setCancelable(false);
-        }
-        if (!mDialog.isShowing())
-            mDialog.show();
-    }
-
-    @Override
-    public void stopProgress() {
-        if (mDialog != null && mDialog.isShowing())
-            mDialog.dismiss();
-    }
+//    @Override
+//    public void showProgress() {
+//        if (mDialog == null) {
+//            mDialog = new ProgressDialog(this);
+//            mDialog.setIndeterminate(true);
+//            mDialog.setCancelable(false);
+//        }
+//        if (!mDialog.isShowing())
+//            mDialog.show();
+//    }
+//
+//    @Override
+//    public void stopProgress() {
+//        if (mDialog != null && mDialog.isShowing())
+//            mDialog.dismiss();
+//    }
 
     @Override
     public final void broadcast(Intent intent) {
@@ -129,5 +145,55 @@ public abstract class BaseActivity extends AppCompatActivity implements IProgres
         if (bundle != null)
             intent.putExtras(bundle);
         return intent;
+    }
+
+    @Override
+    public final SharedPreferences getPreference(String name) {
+        return getSharedPreferences(name, MODE_PRIVATE);
+    }
+
+    @Override
+    public final SharedPreferences getPreference() {
+        return getSharedPreferences(getClass().getName(), MODE_PRIVATE);
+    }
+
+    @Override
+    public final void success(String message) {
+        showMessage(message);
+    }
+
+    @Override
+    protected final void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            onActivityResultOk(requestCode, data);
+        }
+    }
+
+    protected void onActivityResultOk(int requestCode, Intent data) {
+
+    }
+
+    @Override
+    public final void register(String... params) {
+        if (params == null) return;
+
+        IntentFilter filter = new IntentFilter();
+        for (String param : params) {
+            filter.addAction(param);
+        }
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiver);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, filter);
+    }
+
+    @Override
+    public void onReceive(Intent intent) {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiver);
+        super.onDestroy();
     }
 }

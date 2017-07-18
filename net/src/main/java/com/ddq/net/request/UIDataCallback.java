@@ -2,20 +2,21 @@ package com.ddq.net.request;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 
-import com.ddq.architect.error.BaseError;
+import com.ddq.net.error.BaseError;
+import com.ddq.net.view.IProgress;
+import com.ddq.net.request.callback.DataCallback;
 
 /**
  * Created by ddq on 2016/12/30.
  * 负责将子线程数据发送到主线程处理
  */
-public final class UIDataCallback<R> extends DataCallback<R> {
+final class UIDataCallback<R> extends DataCallback<R> {
     private static final Handler HANDLER = new Handler(Looper.getMainLooper());
     private Request<R> mRequest;
 
-    public UIDataCallback(DataCallback<R> request) {
-        super(request == null ? null : request.getProgress());
+    UIDataCallback(Request<R> request, IProgress progress) {
+        super(progress);
         this.mRequest = request;
     }
 
@@ -25,13 +26,15 @@ public final class UIDataCallback<R> extends DataCallback<R> {
     }
 
     @Override
-    public void onSuccess(@NonNull R response) {
+    public void onSuccess(R response) {
         HANDLER.post(new Success(response));
+        onFinish();
     }
 
     @Override
-    public void onError(@NonNull BaseError error) {
+    public void onError(BaseError error) {
         HANDLER.post(new Failed(error));
+        onFinish();
     }
 
     @Override
